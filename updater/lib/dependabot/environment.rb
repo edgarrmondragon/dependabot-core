@@ -23,16 +23,23 @@ module Dependabot
       @api_url ||= environment_variable("DEPENDABOT_API_URL", "http://localhost:3001")
     end
 
+    # The default for DEPENDABOT_JOB_PATH, DEPENDABOT_OUTPUT_PATH, and
+    # DEPENDABOT_REPO_CONTENTS_PATH uses the legacy
+    # `/home/dependabot/dependabot-updater` file structure in updater images. We
+    # gsub to the new location for backwards compatibility, but once setters are
+    # changed to the new default, that can be remvoed.
+
     def self.job_path
       @job_path ||= environment_variable("DEPENDABOT_JOB_PATH")
     end
 
     def self.output_path
-      @output_path ||= environment_variable("DEPENDABOT_OUTPUT_PATH")
+      @output_path ||= environment_variable("DEPENDABOT_OUTPUT_PATH").gsub("dependabot-updater", "updater")
     end
 
     def self.repo_contents_path
-      @repo_contents_path ||= environment_variable("DEPENDABOT_REPO_CONTENTS_PATH", nil)
+      @repo_contents_path ||=
+        environment_variable("DEPENDABOT_REPO_CONTENTS_PATH", nil)&.gsub("dependabot-updater", "updater")
     end
 
     def self.github_actions?
