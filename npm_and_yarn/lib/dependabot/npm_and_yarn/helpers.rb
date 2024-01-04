@@ -157,6 +157,11 @@ module Dependabot
         run_single_yarn_command(command, fingerprint: fingerprint)
       end
 
+      # Run single pnpm command returning stdout/stderr
+      def self.run_pnpm_command(command, fingerprint: command)
+        SharedHelpers.run_shell_command("pnpm #{command}", fingerprint: "pnpm #{fingerprint}")
+      end
+
       # Run single yarn command returning stdout/stderr
       def self.run_single_yarn_command(command, fingerprint: command)
         SharedHelpers.run_shell_command("yarn #{command}", fingerprint: "yarn #{fingerprint}")
