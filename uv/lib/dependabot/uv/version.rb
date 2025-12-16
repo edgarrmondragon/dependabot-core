@@ -7,8 +7,10 @@ require "dependabot/utils"
 
 module Dependabot
   module Uv
-    # UV uses Python's version scheme, so we delegate to Python::Version
-    Version = Dependabot::Python::Version
+    # UV extends Python's version scheme for PEP 440 version handling.
+    # Currently inherits all behavior from Python::Version.
+    class Version < Dependabot::Python::Version
+    end
   end
 end
 

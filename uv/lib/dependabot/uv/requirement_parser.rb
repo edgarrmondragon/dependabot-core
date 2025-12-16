@@ -6,7 +6,9 @@ require "dependabot/python/requirement_parser"
 
 module Dependabot
   module Uv
-    # UV uses the same Python requirement parsing regex patterns (PEP 508)
-    RequirementParser = Dependabot::Python::RequirementParser
+    # UV extends Python's requirement parser for PEP 508 requirement parsing.
+    # Currently inherits all behavior and regex constants from Python::RequirementParser.
+    class RequirementParser < Dependabot::Python::RequirementParser
+    end
   end
 end

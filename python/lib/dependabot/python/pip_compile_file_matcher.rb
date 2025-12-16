@@ -21,7 +21,7 @@ module Dependabot
         return true if file.content&.match?(output_file_regex(name))
 
         basename = name.gsub(/\.txt$/, "")
-        requirements_in_files.any? { |f| f.instance_variable_get(:@name) == basename + ".in" }
+        requirements_in_files.any? { |f| f.name == basename + ".in" }
       end
 
       private

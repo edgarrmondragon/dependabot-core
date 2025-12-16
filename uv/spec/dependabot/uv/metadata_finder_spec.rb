@@ -48,7 +48,25 @@ RSpec.describe Dependabot::Uv::MetadataFinder do
     stub_request(:get, "https://pypi.org/status").to_return(status: 404)
   end
 
-  it_behaves_like "a dependency metadata finder"
+  # UV extends Python::MetadataFinder, so we override the shared example expectations
+  describe "the class" do
+    subject { described_class }
+
+    # UV's superclass is Python::MetadataFinder (not Base directly)
+    its(:superclass) { is_expected.to eq(Dependabot::Python::MetadataFinder) }
+
+    # UV inherits look_up_source from Python, so it's not in private_instance_methods(false)
+    # but it is available via inheritance
+    it "inherits look_up_source from Python::MetadataFinder" do
+      expect(described_class.private_instance_methods)
+        .to include(:look_up_source)
+    end
+
+    it "doesn't define any additional public instance methods" do
+      expect(described_class.public_instance_methods)
+        .to match_array(Dependabot::MetadataFinders::Base.public_instance_methods)
+    end
+  end
 
   describe "#source_url" do
     subject(:source_url) { finder.source_url }

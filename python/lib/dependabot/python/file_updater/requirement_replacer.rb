@@ -120,7 +120,7 @@ module Dependabot
               name: dependency_name,
               version: new_hash_version,
               algorithm: hash_algorithm(old_req)
-            ).join(hash_separator(old_req))
+            ).join(hash_separator(old_req) || "")
           )
         end
 
@@ -155,31 +155,27 @@ module Dependabot
         def hash_algorithm(requirement)
           return unless requirement_includes_hashes?(requirement)
 
-          matches = T.must(original_dependency_declaration_string(requirement).match(RequirementParser::HASHES))
+          matches = original_dependency_declaration_string(requirement).match(RequirementParser::HASHES)
+          return unless matches
+
           matches.named_captures.fetch("algorithm")
         end
 
-        sig { params(requirement: T.nilable(String)).returns(String) }
+        sig { params(requirement: T.nilable(String)).returns(T.nilable(String)) }
         def hash_separator(requirement)
-          return "" unless requirement_includes_hashes?(requirement)
+          return unless requirement_includes_hashes?(requirement)
 
           hash_regex = RequirementParser::HASH
-          matches = T.must(
-            original_dependency_declaration_string(requirement)
-                        .match(/#{hash_regex}((?<separator>\s*\\?\s*?)#{hash_regex})*/)
-          )
-          current_separator = matches.named_captures.fetch("separator")
+          match_result = original_dependency_declaration_string(requirement)
+                         .match(/#{hash_regex}((?<separator>\s*\\?\s*?)#{hash_regex})*/)
+          current_separator = match_result&.named_captures&.fetch("separator", nil)
 
-          hash_matches = T.must(
-            T.must(
-              original_dependency_declaration_string(requirement)
+          default_match = original_dependency_declaration_string(requirement)
                           .match(RequirementParser::HASH)
-            ).pre_match.match(/(?<separator>\s*\\?\s*?)\z/)
-          )
-          default_separator = hash_matches
-                              .named_captures.fetch("separator")
+          default_separator = default_match&.pre_match&.match(/(?<separator>\s*\\?\s*?)\z/)
+                                           &.named_captures&.fetch("separator", nil)
 
-          current_separator || default_separator || ""
+          current_separator || default_separator
         end
 
         sig { params(name: String, version: T.nilable(String), algorithm: T.nilable(String)).returns(T::Array[String]) }

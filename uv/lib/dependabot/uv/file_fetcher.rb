@@ -446,11 +446,11 @@ module Dependabot
         Pathname.new(path).cleanpath.to_path
       end
 
-      sig { returns(Dependabot::Uv::RequiremenstFileMatcher) }
+      sig { returns(Dependabot::Uv::RequirementsFileMatcher) }
       def requirements_in_file_matcher
         @requirements_in_file_matcher ||= T.let(
-          RequiremenstFileMatcher.new(requirements_in_files),
-          T.nilable(Dependabot::Uv::RequiremenstFileMatcher)
+          RequirementsFileMatcher.new(requirements_in_files),
+          T.nilable(Dependabot::Uv::RequirementsFileMatcher)
         )
       end
 

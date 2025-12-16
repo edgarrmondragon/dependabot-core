@@ -7,8 +7,10 @@ require "dependabot/utils"
 
 module Dependabot
   module Uv
-    # UV uses Python's requirement scheme, so we delegate to Python::Requirement
-    Requirement = Dependabot::Python::Requirement
+    # UV extends Python's requirement scheme for PEP 508 requirement parsing.
+    # Currently inherits all behavior from Python::Requirement.
+    class Requirement < Dependabot::Python::Requirement
+    end
   end
 end
 

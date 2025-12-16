@@ -287,7 +287,7 @@ RSpec.describe Dependabot::Uv::UpdateChecker::RequirementsUpdater do
         context "when a compatibility requirement was specified" do
           let(:setup_py_req_string) { "~=1.3.0" }
 
-          its([:requirement]) { is_expected.to eq(">=1.3,<1.6") }
+          its([:requirement]) { is_expected.to eq("~=1.5.0") }
 
           context "when the requirement supports the new version" do
             let(:setup_py_req_string) { "~=1.3" }
@@ -299,7 +299,21 @@ RSpec.describe Dependabot::Uv::UpdateChecker::RequirementsUpdater do
             let(:setup_py_req_string) { "~=1.3" }
             let(:latest_resolvable_version) { "2.1.0" }
 
-            its([:requirement]) { is_expected.to eq(">=1.3,<3.0") }
+            its([:requirement]) { is_expected.to eq("~=2.1") }
+          end
+
+          context "when bumping from minor version 4.1 to 5.0 (issue example)" do
+            let(:setup_py_req_string) { "~=4.1" }
+            let(:latest_resolvable_version) { "5.0.0" }
+
+            its([:requirement]) { is_expected.to eq("~=5.0") }
+          end
+
+          context "when maintaining precision with fewer segments in new version" do
+            let(:setup_py_req_string) { "~=5.0.0" }
+            let(:latest_resolvable_version) { "5.1" }
+
+            its([:requirement]) { is_expected.to eq("~=5.1.0") }
           end
         end
 
@@ -389,7 +403,7 @@ RSpec.describe Dependabot::Uv::UpdateChecker::RequirementsUpdater do
         context "when a compatibility requirement was specified" do
           let(:setup_cfg_req_string) { "~=1.3.0" }
 
-          its([:requirement]) { is_expected.to eq(">=1.3,<1.6") }
+          its([:requirement]) { is_expected.to eq("~=1.5.0") }
 
           context "when the requirement supports the new version" do
             let(:setup_cfg_req_string) { "~=1.3" }
@@ -401,7 +415,21 @@ RSpec.describe Dependabot::Uv::UpdateChecker::RequirementsUpdater do
             let(:setup_cfg_req_string) { "~=1.3" }
             let(:latest_resolvable_version) { "2.1.0" }
 
-            its([:requirement]) { is_expected.to eq(">=1.3,<3.0") }
+            its([:requirement]) { is_expected.to eq("~=2.1") }
+          end
+
+          context "when bumping from minor version 4.1 to 5.0 (issue example)" do
+            let(:setup_cfg_req_string) { "~=4.1" }
+            let(:latest_resolvable_version) { "5.0.0" }
+
+            its([:requirement]) { is_expected.to eq("~=5.0") }
+          end
+
+          context "when maintaining precision with fewer segments in new version" do
+            let(:setup_cfg_req_string) { "~=5.0.0" }
+            let(:latest_resolvable_version) { "5.1" }
+
+            its([:requirement]) { is_expected.to eq("~=5.1.0") }
           end
         end
 

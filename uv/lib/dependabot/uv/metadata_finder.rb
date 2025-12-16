@@ -7,8 +7,10 @@ require "dependabot/metadata_finders"
 
 module Dependabot
   module Uv
-    # UV uses Python's PyPI metadata lookup, so we delegate to Python::MetadataFinder
-    MetadataFinder = Dependabot::Python::MetadataFinder
+    # UV extends Python's metadata finder for PyPI package metadata lookup.
+    # Currently inherits all behavior from Python::MetadataFinder.
+    class MetadataFinder < Dependabot::Python::MetadataFinder
+    end
   end
 end
 
